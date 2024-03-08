@@ -2,6 +2,7 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 import { get } from 'aws-amplify/api';
 import './App.css';
+import { GitHubBornOn } from './GitHubBornOn';
 
 const App = () => {
     // Create coins variable and set to empty array
@@ -33,7 +34,7 @@ const App = () => {
           }
         }
       });
-      
+
       const { body } = await restOperation.response;
       const json = await body.json();
       updateCoins(json.coins);
@@ -63,8 +64,11 @@ const App = () => {
               <h2>{coin.name} - {coin.symbol}</h2>
               <h5>${coin.price_usd}</h5>
             </div>
+      
+
           ))
         }
+                <GitHubBornOn />  
       </div>
     );
   }
