@@ -7,8 +7,6 @@ See the License for the specific language governing permissions and limitations 
 */
 
 
-
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -30,16 +28,26 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
+// Import axios
+const axios = require('axios')
 
 app.get('/coins', function(req, res) {
-  const coins = [
-    { name: 'Bitcoin', symbol: 'BTC', price_usd: "10000" },
-    { name: 'Ethereum', symbol: 'ETH', price_usd: "400" },
-    { name: 'Litecoin', symbol: 'LTC', price_usd: "150" }
-  ]
-  res.json({
-    coins
-  })
+  // Define base url
+  let apiUrl = `https://api.coinlore.com/api/tickers?start=0&limit=10`
+
+  // Check if there are any query string parameters
+  // If so, reset the base url to include them
+  if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
+   const { start = 0, limit = 10 } = req.apiGateway.event.queryStringParameters
+   apiUrl = `https://api.coinlore.com/api/tickers/?start=${start}&limit=${limit}`
+  }
+
+  // Call API and return response
+  axios.get(apiUrl)
+    .then(response => {
+      res.json({  coins: response.data.data })
+    })
+    .catch(err => res.json({ error: err }))
 })
 
 app.get('/item', function(req, res) {
