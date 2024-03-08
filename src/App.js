@@ -9,8 +9,7 @@ const App = () => {
   const [coins, updateCoins] = useState([]);
 
   // Define function to all API
-  async function fetchCoins() {
-   //Get request with latest Amplify
+  const fetchCoins = async() => {
    const restOperation = await get({
     apiName: "cryptoapi",
     path: "/coins"
