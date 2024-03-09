@@ -41,6 +41,7 @@ const App = () => {
     updateLoading(false);
   };
 
+  
   // Call fetchCoins function when component loads
   useEffect(() => {
     fetchCoins();
