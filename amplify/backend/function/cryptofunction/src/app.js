@@ -6,129 +6,118 @@ or in the "license" file accompanying this file. This file is distributed on an 
 See the License for the specific language governing permissions and limitations under the License.
 */
 
-
-const express = require('express')
-const bodyParser = require('body-parser')
-const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+const express = require("express");
+const bodyParser = require("body-parser");
+const awsServerlessExpressMiddleware = require("aws-serverless-express/middleware");
 
 // declare a new express app
-const app = express()
-app.use(bodyParser.json())
-app.use(awsServerlessExpressMiddleware.eventContext())
+const app = express();
+app.use(bodyParser.json());
+app.use(awsServerlessExpressMiddleware.eventContext());
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "*")
-  next()
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+  next();
 });
-
 
 /**********************
  * Example get method *
  **********************/
 
 // Import axios
-const axios = require('axios')
+const axios = require("axios");
 
-app.get('/coins', function(req, res) {
+app.get("/coins", function (req, res) {
   // Define base url
-  let apiUrl = `https://api.coinlore.com/api/tickers?start=0&limit=10`
+  let apiUrl = `https://api.coinlore.com/api/tickers?start=0&limit=10`;
 
   // Check if there are any query string parameters
   // If so, reset the base url to include them
   if (req.apiGateway && req.apiGateway.event.queryStringParameters) {
-   const { start = 0, limit = 10 } = req.apiGateway.event.queryStringParameters
-   apiUrl = `https://api.coinlore.com/api/tickers/?start=${start}&limit=${limit}`
+    const { start = 0, limit = 10 } =
+      req.apiGateway.event.queryStringParameters;
+    apiUrl = `https://api.coinlore.com/api/tickers/?start=${start}&limit=${limit}`;
   }
 
   // Call API and return response
-  axios.get(apiUrl)
-    .then(response => {
-      res.json({  coins: response.data.data })
+  axios
+    .get(apiUrl)
+    .then((response) => {
+      res.json({ coins: response.data.data });
     })
-    .catch(err => res.json({ error: err }))
-})
-
-
-app.get(
-  '/born'  //route name
-  , (req, res) => { // req is dim, not used
-
-    // Define base url
-    let apiUrl = `https://api.github.com/users/mbatuhantuna`
-
-
-    // Call API and return response
-    axios.get(apiUrl)
-      .then(
-        response => {
-          res.json({bornTime: response.data });
-        })
-      .catch(
-        err => res.json({ error: err })  
-      );
-    }
-  );
-
-
-app.get('/item', function(req, res) {
-  // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+    .catch((err) => res.json({ error: err }));
 });
 
-app.get('/item/*', function(req, res) {
+app.get("/born", (req, res) => {
+  const apiUrl = `https://api.github.com/users/mbatuhantuna`;
+
+  axios
+    .get(apiUrl)
+    .then((response) => {
+      res.json({ bornTime: response.data });
+    })
+    .catch((err) => res.json({ error: err }));
+});
+
+app.get("/item", function (req, res) {
   // Add your code here
-  res.json({success: 'get call succeed!', url: req.url});
+  res.json({ success: "get call succeed!", url: req.url });
+});
+
+app.get("/item/*", function (req, res) {
+  // Add your code here
+  res.json({ success: "get call succeed!", url: req.url });
 });
 
 /****************************
-* Example post method *
-****************************/
+ * Example post method *
+ ****************************/
 
-app.post('/item', function(req, res) {
+app.post("/item", function (req, res) {
   // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
+  res.json({ success: "post call succeed!", url: req.url, body: req.body });
 });
 
-app.post('/item/*', function(req, res) {
+app.post("/item/*", function (req, res) {
   // Add your code here
-  res.json({success: 'post call succeed!', url: req.url, body: req.body})
-});
-
-/****************************
-* Example put method *
-****************************/
-
-app.put('/item', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
-});
-
-app.put('/item/*', function(req, res) {
-  // Add your code here
-  res.json({success: 'put call succeed!', url: req.url, body: req.body})
+  res.json({ success: "post call succeed!", url: req.url, body: req.body });
 });
 
 /****************************
-* Example delete method *
-****************************/
+ * Example put method *
+ ****************************/
 
-app.delete('/item', function(req, res) {
+app.put("/item", function (req, res) {
   // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+  res.json({ success: "put call succeed!", url: req.url, body: req.body });
 });
 
-app.delete('/item/*', function(req, res) {
+app.put("/item/*", function (req, res) {
   // Add your code here
-  res.json({success: 'delete call succeed!', url: req.url});
+  res.json({ success: "put call succeed!", url: req.url, body: req.body });
 });
 
-app.listen(3000, function() {
-    console.log("App started")
+/****************************
+ * Example delete method *
+ ****************************/
+
+app.delete("/item", function (req, res) {
+  // Add your code here
+  res.json({ success: "delete call succeed!", url: req.url });
+});
+
+app.delete("/item/*", function (req, res) {
+  // Add your code here
+  res.json({ success: "delete call succeed!", url: req.url });
+});
+
+app.listen(3000, function () {
+  console.log("App started");
 });
 
 // Export the app object. When executing the application local this does nothing. However,
 // to port it to AWS Lambda we will create a wrapper around that will load the app from
 // this file
-module.exports = app
+module.exports = app;
